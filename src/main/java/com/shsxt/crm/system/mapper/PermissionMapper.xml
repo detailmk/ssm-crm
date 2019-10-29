@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shsxt.crm.system.dao.PermissionMapper">
+    <resultMap id="BaseResultMap" type="com.shsxt.crm.system.pojo.Permission">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="role_id" jdbcType="INTEGER" property="roleId"/>
+        <result column="module_id" jdbcType="INTEGER" property="moduleId"/>
+        <result column="acl_value" jdbcType="VARCHAR" property="aclValue"/>
+        <result column="create_date" jdbcType="TIMESTAMP" property="createDate"/>
+        <result column="update_date" jdbcType="TIMESTAMP" property="updateDate"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    id, role_id, module_id, acl_value, create_date, update_date
+  </sql>
+    <select id="selectById" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_permission
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+    <delete id="delete" parameterType="java.lang.Integer">
+    delete from t_permission
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+    <insert id="save" parameterType="com.shsxt.crm.system.pojo.Permission">
+        <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into t_permission
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="roleId != null">
+                role_id,
+            </if>
+            <if test="moduleId != null">
+                module_id,
+            </if>
+            <if test="aclValue != null">
+                acl_value,
+            </if>
+            <if test="createDate != null">
+                create_date,
+            </if>
+            <if test="updateDate != null">
+                update_date,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="roleId != null">
+                #{roleId,jdbcType=INTEGER},
+            </if>
+            <if test="moduleId != null">
+                #{moduleId,jdbcType=INTEGER},
+            </if>
+            <if test="aclValue != null">
+                #{aclValue,jdbcType=VARCHAR},
+            </if>
+            <if test="createDate != null">
+                #{createDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateDate != null">
+                #{updateDate,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+    <update id="update" parameterType="com.shsxt.crm.system.pojo.Permission">
+        update t_permission
+        <set>
+            <if test="roleId != null">
+                role_id = #{roleId,jdbcType=INTEGER},
+            </if>
+            <if test="moduleId != null">
+                module_id = #{moduleId,jdbcType=INTEGER},
+            </if>
+            <if test="aclValue != null">
+                acl_value = #{aclValue,jdbcType=VARCHAR},
+            </if>
+            <if test="createDate != null">
+                create_date = #{createDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateDate != null">
+                update_date = #{updateDate,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+
+    <!-- 根据角色id统计权限 -->
+    <select id="selectPermissionTotalByRoleId" resultType="int">
+        SELECT count(1) FROM t_permission WHERE role_id = #{roleId}
+    </select>
+
+    <!-- 根据角色id删除权限 -->
+    <delete id="deletePermissionByRoleId">
+        DELETE FROM t_permission WHERE role_id = #{roleId}
+    </delete>
+
+    <!-- 批量添加权限 -->
+    <insert id="saveBatch" parameterType="list">
+        INSERT INTO t_permission (
+            role_id,
+            module_id,
+            acl_value,
+            create_date,
+            update_date
+        )
+        VALUES
+        <foreach collection="list" item="item" separator=",">
+            (#{item.roleId}, #{item.moduleId}, #{item.aclValue},
+            #{item.createDate}, #{item.updateDate})
+        </foreach>
+    </insert>
+
+    <!-- 根据模块id修改权限码 -->
+    <update id="updateAclValueByModuleId" parameterType="Permission">
+        UPDATE t_permission SET acl_value = #{aclValue} WHERE module_id = #{moduleId}
+    </update>
+
+    <!-- 根据权限码统计模块权限关联信息 -->
+    <select id="selectPermissionTotalByAclValue" parameterType="string" resultType="int">
+        SELECT
+            count(1)
+        FROM
+            t_permission
+        WHERE
+            acl_value LIKE CONCAT(#{aclValue}, '%')
+    </select>
+
+    <!-- 根据权限码删除模块权限关联信息 -->
+    <delete id="deletePermissionByAclValue" parameterType="string">
+        DELETE FROM t_permission WHERE acl_value LIKE CONCAT(#{aclValue}, '%')
+    </delete>
+</mapper>

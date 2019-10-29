@@ -1,0 +1,150 @@
+package com.shsxt.crm.customer.pojo;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import java.io.Serializable;
+import java.util.Date;
+
+public class CustomerLoss implements Serializable {
+    private Integer id;
+
+    private String cusNo;
+
+    private String cusName;
+
+    private String cusManager;
+
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date lastOrderTime;
+
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date confirmLossTime;
+
+    private Integer state;
+
+    private String lossReason;
+
+    private Integer isValid;
+
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date createDate;
+
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date updateDate;
+
+    private static final long serialVersionUID = 1L;
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getCusNo() {
+        return cusNo;
+    }
+
+    public void setCusNo(String cusNo) {
+        this.cusNo = cusNo == null ? null : cusNo.trim();
+    }
+
+    public String getCusName() {
+        return cusName;
+    }
+
+    public void setCusName(String cusName) {
+        this.cusName = cusName == null ? null : cusName.trim();
+    }
+
+    public String getCusManager() {
+        return cusManager;
+    }
+
+    public void setCusManager(String cusManager) {
+        this.cusManager = cusManager == null ? null : cusManager.trim();
+    }
+
+    public Date getLastOrderTime() {
+        return lastOrderTime;
+    }
+
+    public void setLastOrderTime(Date lastOrderTime) {
+        this.lastOrderTime = lastOrderTime;
+    }
+
+    public Date getConfirmLossTime() {
+        return confirmLossTime;
+    }
+
+    public void setConfirmLossTime(Date confirmLossTime) {
+        this.confirmLossTime = confirmLossTime;
+    }
+
+    public Integer getState() {
+        return state;
+    }
+
+    public void setState(Integer state) {
+        this.state = state;
+    }
+
+    public String getLossReason() {
+        return lossReason;
+    }
+
+    public void setLossReason(String lossReason) {
+        this.lossReason = lossReason == null ? null : lossReason.trim();
+    }
+
+    public Integer getIsValid() {
+        return isValid;
+    }
+
+    public void setIsValid(Integer isValid) {
+        this.isValid = isValid;
+    }
+
+    public Date getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(Date createDate) {
+        this.createDate = createDate;
+    }
+
+    public Date getUpdateDate() {
+        return updateDate;
+    }
+
+    public void setUpdateDate(Date updateDate) {
+        this.updateDate = updateDate;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(getClass().getSimpleName());
+        sb.append(" [");
+        sb.append("Hash = ").append(hashCode());
+        sb.append(", id=").append(id);
+        sb.append(", cusNo=").append(cusNo);
+        sb.append(", cusName=").append(cusName);
+        sb.append(", cusManager=").append(cusManager);
+        sb.append(", lastOrderTime=").append(lastOrderTime);
+        sb.append(", confirmLossTime=").append(confirmLossTime);
+        sb.append(", state=").append(state);
+        sb.append(", lossReason=").append(lossReason);
+        sb.append(", isValid=").append(isValid);
+        sb.append(", createDate=").append(createDate);
+        sb.append(", updateDate=").append(updateDate);
+        sb.append("]");
+        return sb.toString();
+    }
+}

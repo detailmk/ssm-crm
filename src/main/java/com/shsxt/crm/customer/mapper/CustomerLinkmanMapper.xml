@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shsxt.crm.customer.dao.CustomerLinkmanMapper">
+    <resultMap id="BaseResultMap" type="com.shsxt.crm.customer.pojo.CustomerLinkman">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="cus_id" jdbcType="INTEGER" property="cusId"/>
+        <result column="link_name" jdbcType="VARCHAR" property="linkName"/>
+        <result column="sex" jdbcType="VARCHAR" property="sex"/>
+        <result column="zhiwei" jdbcType="VARCHAR" property="zhiwei"/>
+        <result column="office_phone" jdbcType="VARCHAR" property="officePhone"/>
+        <result column="phone" jdbcType="VARCHAR" property="phone"/>
+        <result column="is_valid" jdbcType="INTEGER" property="isValid"/>
+        <result column="ceate_date" jdbcType="TIMESTAMP" property="ceateDate"/>
+        <result column="update_date" jdbcType="TIMESTAMP" property="updateDate"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    id, cus_id, link_name, sex, zhiwei, office_phone, phone, is_valid, ceate_date, update_date
+  </sql>
+    <select id="selectById" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_customer_linkman
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+    <delete id="delete" parameterType="java.lang.Integer">
+    delete from t_customer_linkman
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+    <insert id="save" parameterType="com.shsxt.crm.customer.pojo.CustomerLinkman">
+        <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into t_customer_linkman
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="cusId != null">
+                cus_id,
+            </if>
+            <if test="linkName != null">
+                link_name,
+            </if>
+            <if test="sex != null">
+                sex,
+            </if>
+            <if test="zhiwei != null">
+                zhiwei,
+            </if>
+            <if test="officePhone != null">
+                office_phone,
+            </if>
+            <if test="phone != null">
+                phone,
+            </if>
+            <if test="isValid != null">
+                is_valid,
+            </if>
+            <if test="ceateDate != null">
+                ceate_date,
+            </if>
+            <if test="updateDate != null">
+                update_date,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="cusId != null">
+                #{cusId,jdbcType=INTEGER},
+            </if>
+            <if test="linkName != null">
+                #{linkName,jdbcType=VARCHAR},
+            </if>
+            <if test="sex != null">
+                #{sex,jdbcType=VARCHAR},
+            </if>
+            <if test="zhiwei != null">
+                #{zhiwei,jdbcType=VARCHAR},
+            </if>
+            <if test="officePhone != null">
+                #{officePhone,jdbcType=VARCHAR},
+            </if>
+            <if test="phone != null">
+                #{phone,jdbcType=VARCHAR},
+            </if>
+            <if test="isValid != null">
+                #{isValid,jdbcType=INTEGER},
+            </if>
+            <if test="ceateDate != null">
+                #{ceateDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateDate != null">
+                #{updateDate,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+    <update id="update" parameterType="com.shsxt.crm.customer.pojo.CustomerLinkman">
+        update t_customer_linkman
+        <set>
+            <if test="cusId != null">
+                cus_id = #{cusId,jdbcType=INTEGER},
+            </if>
+            <if test="linkName != null">
+                link_name = #{linkName,jdbcType=VARCHAR},
+            </if>
+            <if test="sex != null">
+                sex = #{sex,jdbcType=VARCHAR},
+            </if>
+            <if test="zhiwei != null">
+                zhiwei = #{zhiwei,jdbcType=VARCHAR},
+            </if>
+            <if test="officePhone != null">
+                office_phone = #{officePhone,jdbcType=VARCHAR},
+            </if>
+            <if test="phone != null">
+                phone = #{phone,jdbcType=VARCHAR},
+            </if>
+            <if test="isValid != null">
+                is_valid = #{isValid,jdbcType=INTEGER},
+            </if>
+            <if test="ceateDate != null">
+                ceate_date = #{ceateDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateDate != null">
+                update_date = #{updateDate,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+
+    <!-- 分页查询 -->
+    <select id="selectByParams" parameterType="CustomerQuery" resultMap="BaseResultMap">
+        SELECT
+            *
+        FROM
+            t_customer_linkman
+        WHERE
+            is_valid = 1
+        AND cus_id = #{cusId}
+    </select>
+
+    <!-- 逻辑删除联系人 -->
+    <update id="deleteBatch">
+        UPDATE t_customer_linkman
+        SET is_valid = 0
+        WHERE id IN
+        <foreach collection="array" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </update>
+</mapper>

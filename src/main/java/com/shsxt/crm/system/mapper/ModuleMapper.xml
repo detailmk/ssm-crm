@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shsxt.crm.system.dao.ModuleMapper">
+    <resultMap id="BaseResultMap" type="com.shsxt.crm.system.pojo.Module">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="module_name" jdbcType="VARCHAR" property="moduleName"/>
+        <result column="module_style" jdbcType="VARCHAR" property="moduleStyle"/>
+        <result column="url" jdbcType="VARCHAR" property="url"/>
+        <result column="parent_id" jdbcType="INTEGER" property="parentId"/>
+        <result column="parent_opt_value" jdbcType="VARCHAR" property="parentOptValue"/>
+        <result column="grade" jdbcType="INTEGER" property="grade"/>
+        <result column="opt_value" jdbcType="VARCHAR" property="optValue"/>
+        <result column="orders" jdbcType="INTEGER" property="orders"/>
+        <result column="is_valid" jdbcType="TINYINT" property="isValid"/>
+        <result column="create_date" jdbcType="TIMESTAMP" property="createDate"/>
+        <result column="update_date" jdbcType="TIMESTAMP" property="updateDate"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    id, module_name, module_style, url, parent_id, parent_opt_value, grade, opt_value, 
+    orders, is_valid, create_date, update_date
+  </sql>
+    <select id="selectById" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_module
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+    <delete id="delete" parameterType="java.lang.Integer">
+    delete from t_module
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+    <insert id="save" parameterType="com.shsxt.crm.system.pojo.Module">
+        <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into t_module
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="moduleName != null">
+                module_name,
+            </if>
+            <if test="moduleStyle != null">
+                module_style,
+            </if>
+            <if test="url != null">
+                url,
+            </if>
+            <if test="parentId != null">
+                parent_id,
+            </if>
+            <if test="parentOptValue != null">
+                parent_opt_value,
+            </if>
+            <if test="grade != null">
+                grade,
+            </if>
+            <if test="optValue != null">
+                opt_value,
+            </if>
+            <if test="orders != null">
+                orders,
+            </if>
+            <if test="isValid != null">
+                is_valid,
+            </if>
+            <if test="createDate != null">
+                create_date,
+            </if>
+            <if test="updateDate != null">
+                update_date,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="moduleName != null">
+                #{moduleName,jdbcType=VARCHAR},
+            </if>
+            <if test="moduleStyle != null">
+                #{moduleStyle,jdbcType=VARCHAR},
+            </if>
+            <if test="url != null">
+                #{url,jdbcType=VARCHAR},
+            </if>
+            <if test="parentId != null">
+                #{parentId,jdbcType=INTEGER},
+            </if>
+            <if test="parentOptValue != null">
+                #{parentOptValue,jdbcType=VARCHAR},
+            </if>
+            <if test="grade != null">
+                #{grade,jdbcType=INTEGER},
+            </if>
+            <if test="optValue != null">
+                #{optValue,jdbcType=VARCHAR},
+            </if>
+            <if test="orders != null">
+                #{orders,jdbcType=INTEGER},
+            </if>
+            <if test="isValid != null">
+                #{isValid,jdbcType=TINYINT},
+            </if>
+            <if test="createDate != null">
+                #{createDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateDate != null">
+                #{updateDate,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+    <update id="update" parameterType="com.shsxt.crm.system.pojo.Module">
+        update t_module
+        <set>
+            <if test="moduleName != null">
+                module_name = #{moduleName,jdbcType=VARCHAR},
+            </if>
+            <if test="moduleStyle != null">
+                module_style = #{moduleStyle,jdbcType=VARCHAR},
+            </if>
+            <if test="url != null">
+                url = #{url,jdbcType=VARCHAR},
+            </if>
+            <if test="parentId != null">
+                parent_id = #{parentId,jdbcType=INTEGER},
+            </if>
+            <if test="parentOptValue != null">
+                parent_opt_value = #{parentOptValue,jdbcType=VARCHAR},
+            </if>
+            <if test="grade != null">
+                grade = #{grade,jdbcType=INTEGER},
+            </if>
+            <if test="optValue != null">
+                opt_value = #{optValue,jdbcType=VARCHAR},
+            </if>
+            <if test="orders != null">
+                orders = #{orders,jdbcType=INTEGER},
+            </if>
+            <if test="isValid != null">
+                is_valid = #{isValid,jdbcType=TINYINT},
+            </if>
+            <if test="createDate != null">
+                create_date = #{createDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateDate != null">
+                update_date = #{updateDate,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+
+    <!-- 查询所有权限并根据角色查询所拥有的权限 -->
+    <select id="selectAllModuleListByRoleId" resultType="ModuleDto">
+        SELECT
+            m.id id,
+            m.module_name name,
+            m.parent_id pId,
+            p.role_id checked
+        FROM
+            t_module m
+        LEFT JOIN (
+            SELECT
+                t.role_id,
+                t.module_id
+            FROM
+                t_permission t
+            WHERE
+                t.role_id = #{roleId}
+        ) p ON m.id = p.module_id
+    </select>
+
+    <!-- 分页查询 -->
+    <select id="selectByParams" parameterType="ModuleQuery" resultMap="BaseResultMap">
+        SELECT
+            *
+        FROM
+            t_module
+        <where>
+            is_valid = 1
+            <if test="null != moduleName and '' != moduleName">
+                AND module_name LIKE CONCAT('%', #{moduleName}, '%')
+            </if>
+            <if test="null != optValue and '' != optValue">
+                AND opt_value LIKE CONCAT('%', #{optValue}, '%')
+            </if>
+            <if test="null != parentId">
+                AND parent_id = #{parentId}
+            </if>
+            <if test="null != grade">
+                AND grade = #{grade}
+            </if>
+        </where>
+    </select>
+
+    <!-- 根据菜单等级查询上级菜单 -->
+    <select id="selectModuleByGrade" parameterType="int" resultType="map">
+        SELECT
+            id id,
+            module_name moduleName
+        FROM
+            t_module
+        WHERE
+            is_valid = 1
+        AND grade = #{grade}
+    </select>
+
+    <!-- 根据模块名查询模块 -->
+    <select id="selectModuleByModuleName" parameterType="string" resultMap="BaseResultMap">
+        SELECT * FROM t_module WHERE is_valid = 1 AND module_name = #{moduleName}
+    </select>
+
+    <!-- 根据权限码查询模块 -->
+    <select id="selectModuleByOptValue" parameterType="string" resultMap="BaseResultMap">
+        SELECT * FROM t_module WHERE is_valid = 1 AND opt_value = #{optValue}
+    </select>
+
+    <!-- 根据主键自查询子模块 -->
+    <select id="selectModuleChildrenListById" parameterType="int" resultMap="BaseResultMap">
+        SELECT
+            m2.*
+        FROM
+            t_module m1
+        LEFT JOIN t_module m2 ON m1.id = m2.parent_id
+        WHERE
+            m2.is_valid = 1
+        AND m1.id = #{id};
+    </select>
+
+    <!-- 根据权限码统计模块及其子模块 -->
+    <select id="selectModuleTotalByOptValue" parameterType="string" resultType="int">
+        SELECT
+            count(1)
+        FROM
+            t_module
+        WHERE
+            is_valid = 1
+        AND opt_value LIKE CONCAT(#{optValue}, '%')
+    </select>
+
+    <!-- 根据权限码逻辑删除模块及其子模块 -->
+    <update id="deleteModuleByOptValue" parameterType="string">
+        UPDATE t_module SET is_valid = 0 WHERE opt_value LIKE CONCAT(#{optValue}, '%')
+    </update>
+</mapper>
